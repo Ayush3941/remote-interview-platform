@@ -14,7 +14,6 @@ import MeetingCard from "@/components/MeetingCard";
 
 export default function Home() {
   const router = useRouter();
-
   const { isInterviewer, isCandidate, isLoading } = useUserRole();
   const interviews = useQuery(api.interviews.getMyInterviews);
   const [showModal, setShowModal] = useState(false);
@@ -38,30 +37,34 @@ export default function Home() {
   if (isLoading) return <LoaderUI />;
 
   return (
-    <div className="container max-w-7xl mx-auto p-6">
-      {/* WELCOME SECTION */}
-      <div className="rounded-lg bg-card p-6 border shadow-sm mb-10">
+    <div className="container-m max-w-7xl mx-auto py-6 space-y-10">
+      {/* Welcome Section */}
+      <section className="rounded-2xl bg-card p-8 border shadow-sm">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
           Welcome back!
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-2 max-w-xl leading-relaxed">
           {isInterviewer
-            ? "Manage your interviews and review candidates effectively"
-            : "Access your upcoming interviews and preparations"}
+            ? "Easily manage your interviews, track progress, and engage with candidates through streamlined workflows."
+            : "Keep track of your upcoming interviews, join sessions seamlessly, and review your progress at a glance."}
         </p>
-      </div>
+      </section>
 
-      {isInterviewer ? (
+      {/* Interviewer View */}
+      {isInterviewer && (
         <>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {QUICK_ACTIONS.map((action) => (
-              <ActionCard
-                key={action.title}
-                action={action}
-                onClick={() => handleQuickAction(action.title)}
-              />
-            ))}
-          </div>
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Quick Actions</h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {QUICK_ACTIONS.map((action) => (
+                <ActionCard
+                  key={action.title}
+                  action={action}
+                  onClick={() => handleQuickAction(action.title)}
+                />
+              ))}
+            </div>
+          </section>
 
           <MeetingModal
             isOpen={showModal}
@@ -70,14 +73,17 @@ export default function Home() {
             isJoinMeeting={modalType === "join"}
           />
         </>
-      ) : (
-        <>
+      )}
+
+      {/* Candidate View */}
+      {isCandidate && (
+        <section className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">Your Interviews</h1>
-            <p className="text-muted-foreground mt-1">View and join your scheduled interviews</p>
+            <h2 className="text-2xl font-semibold">Your Interviews</h2>
+            <p className="text-muted-foreground mt-1">View and join your scheduled interviews with ease.</p>
           </div>
 
-          <div className="mt-8">
+          <div>
             {interviews === undefined ? (
               <div className="flex justify-center py-12">
                 <Loader2Icon className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -90,11 +96,11 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">
-                You have no scheduled interviews at the moment
+                You have no scheduled interviews at the moment.
               </div>
             )}
           </div>
-        </>
+        </section>
       )}
     </div>
   );
